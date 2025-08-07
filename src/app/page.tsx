@@ -54,20 +54,18 @@ export default function Home() {
 
   return (
     <main style={{ margin: "24px" }}>
-      <h1>Solace Advocates</h1>
+      <h1 className="text-2xl font-bold text-center">Solace Advocates</h1>
       <br />
       <br />
       <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span>{searchTerm}</span>
-        </p>
         <input 
           style={{ border: "1px solid black" }} 
           value={searchTerm}
           onChange={onChange} 
+          placeholder="Search"
+          className="input input-bordered w-full max-w-xs bg-white"
         />
-        <button onClick={onClick}>Reset Search</button>
+        <button className="btn btn-primary btn-sm ml-2" onClick={onClick}>Reset Search</button>
       </div>
       <br />
       <br />
