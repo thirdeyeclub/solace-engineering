@@ -63,6 +63,19 @@ export default function Home() {
     setExpandedRows(newExpandedRows);
   };
 
+  const formatPhoneNumber = (phoneNumber: number): string => {
+    const phone = phoneNumber.toString();
+    return `${phone.slice(0, 3)}-${phone.slice(3, 6)}-${phone.slice(6)}`;
+  };
+
+  const copyToClipboard = async (phoneNumber: number) => {
+    try {
+      await navigator.clipboard.writeText(formatPhoneNumber(phoneNumber));
+    } catch (err) {
+      console.error('Failed to copy phone number:', err);
+    }
+  };
+
   return (
     <main style={{ margin: "24px" }}>
       <h1 className="text-2xl font-bold text-center">Solace Advocates</h1>
@@ -89,7 +102,7 @@ export default function Home() {
               <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">City</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Degree</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Specialties</th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Years of Experience</th>
+              <th className="px-2 py-4 text-center text-sm font-semibold text-gray-900 w-20">Years of Experience</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone Number</th>
             </tr>
           </thead>
@@ -125,8 +138,21 @@ export default function Home() {
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{advocate.yearsOfExperience}</td>
-                  <td className="px-6 py-4 text-sm font-mono text-gray-600">{advocate.phoneNumber}</td>
+                  <td className="px-2 py-4 text-sm font-medium text-gray-900 text-center w-16">{advocate.yearsOfExperience}</td>
+                  <td className="px-6 py-4 text-sm font-mono text-gray-600">
+                    <div className="flex items-center space-x-2">
+                      <span>{formatPhoneNumber(advocate.phoneNumber)}</span>
+                      <button
+                        onClick={() => copyToClipboard(advocate.phoneNumber)}
+                        className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+                        title="Copy phone number"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               );
             })}
