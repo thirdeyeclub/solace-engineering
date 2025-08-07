@@ -27,9 +27,8 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-document.getElementById("search-term")!.innerHTML = searchTerm;
-const searchValue = e.target.value;
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchValue = e.target.value;
     setSearchTerm(searchValue);
 
     console.log("filtering advocates...");
