@@ -17,40 +17,29 @@ export default function Home() {
   const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     console.log("fetching advocates...");
-    fetch("/api/advocates").then((response) => {
+    fetch(`/api/advocates?page=${currentPage}&search=${searchTerm}`).then((response) => {
       response.json().then((jsonResponse) => {
         setAdvocates(jsonResponse.data);
         setFilteredAdvocates(jsonResponse.data);
+        setTotalPages(jsonResponse.pagination.totalPages);
       });
     });
-  }, []);
+  }, [currentPage, searchTerm]);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value;
     setSearchTerm(searchValue);
-
-    console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.includes(searchValue) ||
-        advocate.lastName.includes(searchValue) ||
-        advocate.city.includes(searchValue) ||
-        advocate.degree.includes(searchValue) ||
-        advocate.specialties.includes(searchValue) ||
-        advocate.yearsOfExperience.toString().includes(searchValue)
-      );
-    });
-
-    setFilteredAdvocates(filteredAdvocates);
+    setCurrentPage(1);
   };
 
   const onClick = () => {
-    console.log(advocates);
     setSearchTerm("");
-    setFilteredAdvocates(advocates);
+    setCurrentPage(1);
   };
 
   const toggleRowExpansion = (index: number) => {
@@ -158,6 +147,12 @@ export default function Home() {
             })}
           </tbody>
         </table>
+      </div>
+      
+      <div className="flex justify-center mt-6 space-x-2">
+        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-3 py-1 border rounded disabled:opacity-50">Prev</button>
+        <span className="px-3 py-1">Page {currentPage} of {totalPages}</span>
+        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="px-3 py-1 border rounded disabled:opacity-50">Next</button>
       </div>
     </main>
   );
