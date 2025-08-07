@@ -2,6 +2,8 @@ import db from "../../../db";
 import { advocates } from "../../../db/schema";
 import { count, like, or, sql } from "drizzle-orm";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const page = parseInt(searchParams.get('page') || '1');
@@ -55,7 +57,7 @@ export async function GET(request: Request) {
     const total = totalResult.count;
     const totalPages = Math.ceil(total / limit);
 
-    return Response.json({
+    const response = Response.json({
       data,
       pagination: {
         page,
@@ -65,6 +67,10 @@ export async function GET(request: Request) {
         hasMore: page < totalPages
       }
     });
+
+    response.headers.set('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+    
+    return response;
   } catch (error) {
     console.error("Database query failed:", error);
     return Response.json({ error: "Failed to fetch advocates" }, { status: 500 });
